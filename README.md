@@ -9,3 +9,4 @@ Provides foundational support for XML, SAML 2.0 and other related specifications
 - [@/saml-core](./packages/saml-core/README.md)
 - [@/saml-metadata](./packages/saml-metadata/README.md)
 - [@/saml-bindings](./packages/saml-bindings/README.md)
+- [@/saml-alterior](./packages/saml-alterior/README.md)
