@@ -1,7 +1,7 @@
 {
-  "name": "@astronautlabs/saml-md",
+  "name": "@astronautlabs/saml-alterior",
   "version": "0.0.1",
-  "description": "Implementation of SAML 2.0 Metadata specification",
+  "description": "Provides Alterior support for SAML 2.0",
   "main": "dist/index.js",
   "module": "dist.esm/index.js",
   "types": "dist/index.d.ts",
@@ -20,17 +20,16 @@
     "sso",
     "idp"
   ],
+  "dependencies": {
+    "@alterior/di": "^3.6.7",
+    "@alterior/runtime": "^3.7.1",
+    "@alterior/web-server": "^3.7.1",
+    "tslib": "^2.6.2"
+  },
   "author": "Astronaut Labs, LLC.",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/astronautlabs/saml/issues"
-  },
-  "dependencies": {
-    "@astronautlabs/xml": "^0.0.1",
-    "@astronautlabs/xml-signature": "^0.0.1",
-    "@astronautlabs/saml-core": "^0.0.1",
-    "@astronautlabs/saml-bindings": "^0.0.1",
-    "tslib": "^2.6.2"
   },
   "homepage": "https://github.com/astronautlabs/saml#readme"
 }

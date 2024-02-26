@@ -8,6 +8,7 @@
         "sourceMap": true,
         "target": "ES2016",
         "module": "CommonJS",
+        "moduleResolution": "Node",
         "esModuleInterop": true,
         "resolveJsonModule": true,
         "importHelpers": true
