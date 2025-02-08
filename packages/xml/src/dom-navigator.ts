@@ -34,6 +34,14 @@ export class DomNavigator<ElementT extends Element> {
         return this.xml().required();
     }
 
+    textChild(name: string, ns?: string) {
+        return this.child(name, ns).map(e => e.text());
+    }
+
+    requiredTextChild(name: string, ns?: string) {
+        return this.textChild(name, ns).required();
+    }
+
     onlyChild<ElementT extends Element>(): Maybe<DomNavigator<ElementT>> {
         return maybe(this.element.children.item(0)).map(e => new DomNavigator(e as ElementT));
     }
