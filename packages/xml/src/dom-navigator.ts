@@ -1,4 +1,4 @@
-import { Maybe, maybe } from "./maybe";
+import { Maybe, maybe } from "@astronautlabs/monads";
 
 
 export class DomNavigator<ElementT extends Element> {
