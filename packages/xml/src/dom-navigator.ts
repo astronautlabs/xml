@@ -22,8 +22,16 @@ export class DomNavigator<ElementT extends Element> {
         return maybe(this.element.textContent);
     }
 
+    requiredText() {
+        return this.text().required();
+    }
+
     xml() {
         return maybe(this.element.innerHTML);
+    }
+
+    requiredXml() {
+        return this.xml().required();
     }
 
     onlyChild<ElementT extends Element>(): Maybe<DomNavigator<ElementT>> {
@@ -55,5 +63,9 @@ export class DomNavigator<ElementT extends Element> {
             return maybe(this.element.getAttributeNS(ns, name));
         else
             return maybe(this.element.getAttribute(name));
+    }
+
+    requiredAttribute(name: string, ns?: string) {
+        return this.attribute(name, ns).required();
     }
 }
