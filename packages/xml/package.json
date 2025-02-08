@@ -1,6 +1,6 @@
 {
   "name": "@astronautlabs/xml",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "XML parsing and utilities",
   "main": "dist/index.js",
   "module": "dist.esm/index.js",
