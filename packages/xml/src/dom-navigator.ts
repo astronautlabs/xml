@@ -47,8 +47,13 @@ export class DomNavigator<ElementT extends Element> {
     }
 
     children<ElementT extends Element>(name: string, ns?: string): DomNavigator<ElementT>[] {
-        return Array.from(this.element.children).filter(x => x.tagName === name && (!ns || x.namespaceURI === ns))
-            .map(x => new DomNavigator(x as ElementT));
+        if (ns) {
+            return Array.from(this.element.children).filter(x => x.localName === name && (!ns || x.namespaceURI === ns))
+                .map(x => new DomNavigator(x as ElementT));
+        } else {
+            return Array.from(this.element.children).filter(x => x.tagName === name)
+                .map(x => new DomNavigator(x as ElementT));
+        }
     }
 
     child<ElementT extends Element>(name: string, ns?: string): Maybe<DomNavigator<ElementT>> {
