@@ -35,7 +35,7 @@ export class DomNavigator<ElementT extends Element> {
     }
 
     textChild(name: string, ns?: string) {
-        return this.child(name, ns).map(e => e.text());
+        return this.child(name, ns).bind(e => e.text());
     }
 
     requiredTextChild(name: string, ns?: string) {
