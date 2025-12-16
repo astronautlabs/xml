@@ -8,6 +8,7 @@ import { NotationDeclaration } from "./notation-declaration";
 import { ModelGroupDefinition } from "./model-group-definition";
 
 export interface Schema {
+    targetNamespace: string | undefined;
     annotations: Annotation[];
     typeDefinitions: TypeDefinition[];
     attributeDeclarations: AttributeDeclaration[];
