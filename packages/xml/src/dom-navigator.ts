@@ -46,13 +46,22 @@ export class DomNavigator<ElementT extends Element> {
         return maybe(this.element.children.item(0)).map(e => new DomNavigator(e as ElementT));
     }
 
-    children<ElementT extends Element>(name: string, ns?: string): DomNavigator<ElementT>[] {
-        if (ns) {
-            return Array.from(this.element.children).filter(x => x.localName === name && (!ns || x.namespaceURI === ns))
-                .map(x => new DomNavigator(x as ElementT));
+    children<ElementT extends Element>(name?: string, ns?: string): DomNavigator<ElementT>[] {
+        if (name) {
+            if (ns) {
+                return Array.from(this.element.children).filter(x => x.localName === name && x.namespaceURI === ns)
+                    .map(x => new DomNavigator(x as ElementT));
+            } else {
+                return Array.from(this.element.children).filter(x => x.tagName === name)
+                    .map(x => new DomNavigator(x as ElementT));
+            }
         } else {
-            return Array.from(this.element.children).filter(x => x.tagName === name)
-                .map(x => new DomNavigator(x as ElementT));
+            if (ns) {
+                return Array.from(this.element.children).filter(x => x.namespaceURI === ns)
+                    .map(x => new DomNavigator(x as ElementT));
+            } else {
+                return Array.from(this.element.children).map(x => new DomNavigator(x as ElementT));
+            }
         }
     }
 
