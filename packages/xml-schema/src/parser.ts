@@ -30,20 +30,30 @@ import { NamespaceBinding } from "./namespace-binding";
  * A parser which can create a `Schema` object from an XML document which represents an XML Schema Definition (XSD)
  */
 export class Parser {
-    constructor(readonly schemaElement: Element) {
+    constructor() {
 
     }
 
     readonly types = new TypeRegistry();
 
-    static async parseSchemaFromXml(schemaXML: string): Promise<Schema> {
-        return new Parser(XmlParser.parse(schemaXML).documentElement).parse();
+    static async parseSchemaFromXml(schemaXML: string, url: string): Promise<Schema> {
+        return await new Parser().parse(XmlParser.parse(schemaXML).documentElement, url);
     }
 
     private schemaContext: Schema | undefined;
 
-    parse(): Schema {
+    async fetch(url: string): Promise<string> {
+        let response = await fetch(url);
+        if (response.status !== 200)
+            throw new Error(`Failed to fetch '${url}': status ${response.status}`);
+        return response.text();
+    }
+
+    private schemas = new Map<string, Schema>();
+
+    async parse(schemaElement: Element, url: string): Promise<Schema> {
         const schema: Schema = {
+            targetNamespace: schemaElement.getAttribute('targetNamespace') || undefined,
             annotations: [],
             attributeDeclarations: [],
             attributeGroupDefinitions: [],
@@ -54,14 +64,44 @@ export class Parser {
             typeDefinitions: []
         };
 
+        this.schemas.set(url, schema);
+
         let previousContext = this.schemaContext;
         this.schemaContext = schema;
 
         try {
-
-            for (let child of Array.from(this.schemaElement.children)) {
+            for (let child of Array.from(schemaElement.children)) {
                 let qualifiedName = `${child.namespaceURI}:${child.tagName}`;
                 switch (qualifiedName) {
+                    case `${XMLNS.XS}:include`:
+                        let includeUrl = child.getAttribute('schemaLocation')!;
+                        
+                        if (!this.schemas.has(includeUrl)) {
+                            let xmlString = await this.fetch(includeUrl);
+                            await this.parse(XmlParser.parse(xmlString).documentElement, includeUrl);
+                        }
+                        
+                        let includedSchema = this.schemas.get(includeUrl)!;
+
+                        if (includedSchema.targetNamespace && includedSchema.targetNamespace !== schema.targetNamespace) {
+                            throw new Error(`Included schema must have the same targetNamespace or no targetNamespace specified`);
+                        }
+
+                        if (!includedSchema.targetNamespace) {
+                            includedSchema.targetNamespace = schema.targetNamespace;
+                            // TODO: chameleon
+                        } else {
+                            schema.annotations.push(...includedSchema.annotations);
+                            schema.attributeDeclarations.push(...includedSchema.attributeDeclarations);
+                            schema.attributeGroupDefinitions.push(...includedSchema.attributeGroupDefinitions);
+                            schema.elementDeclarations.push(...includedSchema.elementDeclarations);
+                            schema.identityConstraintDefinitions.push(...includedSchema.identityConstraintDefinitions);
+                            schema.modelGroupDefinitions.push(...includedSchema.modelGroupDefinitions);
+                            schema.notationDeclarations.push(...includedSchema.notationDeclarations);
+                            schema.typeDefinitions.push(...includedSchema.typeDefinitions);
+                        }
+
+                        break;
                     case `${XMLNS.XS}:annotation`:
                         schema.annotations.push(this.parseAnnotation(child));
                         break;
@@ -1357,8 +1397,9 @@ export class Parser {
                 .flat()
         ];
 
+        const schemaElement = element.closest('schema');
         const defaultAttributesApply = this.parseBoolean(n.attribute('defaultAttributesApply').optional(), true, element);
-        const defaultAttributes = this.schemaElement.getAttribute('defaultAttributes');
+        const defaultAttributes = schemaElement?.getAttribute('defaultAttributes');
 
         if (defaultAttributes && defaultAttributesApply) {
             let attributeGroup = this.schemaContext?.attributeGroupDefinitions
