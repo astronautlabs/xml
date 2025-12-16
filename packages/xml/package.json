@@ -14,7 +14,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/astronautlabs/saml.git"
+    "url": "git+https://github.com/astronautlabs/xml.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "saml",
@@ -24,9 +27,9 @@
   "author": "Astronaut Labs, LLC.",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/astronautlabs/saml/issues"
+    "url": "https://github.com/astronautlabs/xml/issues"
   },
-  "homepage": "https://github.com/astronautlabs/saml#readme",
+  "homepage": "https://github.com/astronautlabs/xml#readme",
   "devDependencies": {
     "@types/jsdom": "^21.1.6"
   },
